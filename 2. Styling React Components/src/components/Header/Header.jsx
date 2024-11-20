@@ -8,7 +8,9 @@ componente
 
 // Otra forma de hacer scoping seria crear un componente padre y definir todas las reglas css incluyendo las de
 // sus elementos hijo. Para referirnos al propio elemento usaremos & (como en SasS)
-import { styled } from 'styled-components';
+//import { styled } from 'styled-components';
+
+/* Styled components
 
 const StyledHeader = styled.header`
 display: flex;
@@ -49,17 +51,19 @@ margin-bottom: 2rem;
         font-size: 2.25rem;
     }
 }`;
-
+*/
 
 export default function Header() {
     const conditionalProperty = true;
 
     return (
-        <StyledHeader>
-            <img src={logo} alt="A canvas" />
-            <h1>ReactArt</h1>
-            <p>A community of artists and art-lovers.</p>
-        </StyledHeader>
+        <header className='flex flex-col items-center mt-8 mb-8 md:mb-16'>
+            {/*<StyledHeader> Esto es antes de meter tailwindcss*/}
+            <img src={logo} alt="A canvas" className='mb-8 w-44 h-44 object-contain' />
+            <h1 className='text-xl md:text-4xl font-semibold tracking-widest text-center uppercase text-amber-800 font-myTitle'>ReactArt</h1>
+            <p className='text-stone-500'>A community of artists and art-lovers.</p>
+            {/*</StyledHeader>*/}
+        </header >
     );
     /*return (
         <header>

@@ -1,16 +1,20 @@
 import { useState } from 'react';
 // Styled components: Node module para crear etiquetas html con los estilos y poder usarlas como una especie de componente
-import { styled } from 'styled-components';
-import Input from './Input.jsx';
-import Button from './Button.jsx';
+//import { styled } from 'styled-components';
+// import Input from './Input.jsx'; Ejemplo con styledComponents
+// import Button from './Button.jsx'; Ejemplo con styledComponents
+import ButtonTailwind from './ButtonTailwind.jsx';
+import InputTailwind from './InputTailwind.jsx';
 
 
 // Todas las propiedades añadidas (ej. className) se ven reflejadas en la build final del style-component
+/* Antes de migrar a el proyecto a tailwind
 const ControlDiv = styled.div`
 display: flex;
   flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 1.5rem;`;
+*/
 
 export default function AuthInputs() {
     const [enteredEmail, setEnteredEmail] = useState('');
@@ -31,15 +35,15 @@ export default function AuthInputs() {
     // Las propiedades de un style component se definen con el prefijo $ para evitar que colisionen con propiedades
     // reservadas de los elementos (built-in properties: invalid, readonly, checked...) 
     return (
-        <div id="auth-inputs">
-            <ControlDiv>
-                <Input
+        <div id="auth-inputs" className='w-full max-w-sm p-8 rounded shadow-md bg-gradient-to-b from-stone-700 to-stone-800 mx-auto'>
+            <div className='flex flex-col gap-2 mb-6'>
+                <InputTailwind
                     label="email"
                     type="email"
                     invalid={emailNotValid}
                     onChange={(event) => handleInputChange('email', event.target.value)}
                 />
-                <Input
+                <InputTailwind
                     label="Password"
                     type="password"
                     invalid={passwordNotValid}
@@ -47,12 +51,12 @@ export default function AuthInputs() {
                         handleInputChange('password', event.target.value)
                     }
                 />
-            </ControlDiv>
-            <div className="actions">
-                <button type="button" className="text-button">
+            </div>
+            <div className="flex justify-end gap-4">
+                <button type="button" className="text-amber-400 hover:text-amber-500">
                     Create a new account
                 </button>
-                <Button onClick={()=> setSubmitted(true)}>Sign In</Button>
+                <ButtonTailwind onClick={()=> setSubmitted(true)}>Sign In</ButtonTailwind>
             </div>
         </div>
     );
