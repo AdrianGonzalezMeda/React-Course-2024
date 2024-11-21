@@ -1,6 +1,10 @@
-import ImagePicker from '@/components/meals/image-picker';
+'use client'
+
+import { useFormState, useFormStatus } from 'react-dom';
+
 import classes from './page.module.css';
 import { shareMeal } from '@/lib/server-actions.js';
+import ImagePicker from '@/components/meals/image-picker';
 
 export default function ShareMealPage() {
     /* logic  is now in the server-actions.js because its forbidden to have server actions in use client mode
@@ -9,6 +13,12 @@ export default function ShareMealPage() {
         // formData its an instance of FormData()
     }
     */
+
+    // Handle the state of the response in the server action attached to the <form> (the first parameter of the hook)
+    const [state, formAction] = useFormState(shareMeal, { message: null });
+
+    // React functionality but only really works when using NextJs. Need a <form> parent to works
+    const { pending } = useFormStatus();
 
     return (
         <>
@@ -19,7 +29,7 @@ export default function ShareMealPage() {
                 <p>Or any other meal you feel needs sharing!</p>
             </header>
             <main className={classes.main}>
-                <form className={classes.form} action={shareMeal}> {/*>NextJs allows to server actions can be use here*/}
+                <form className={classes.form} action={formAction}> {/*>NextJs allows to server actions can be use here*/}
                     <div className={classes.row}>
                         <p>
                             <label htmlFor="name">Your name</label>
@@ -48,8 +58,16 @@ export default function ShareMealPage() {
                         ></textarea>
                     </p>
                     <ImagePicker label='Your image' name='image' />
+
+                    {state.message && <p>{state.message}</p>}
                     <p className={classes.actions}>
-                        <button type="submit">Share Meal</button>
+                        <button disabled={pending}>
+                            {pending ? 'Submitting...' : 'Share Meal'}
+                        </button>
+                        {/* If this component was a server component you can create a separated component to use 
+                        useFormStatus there without declare this component as 'use client' 
+                        <MealsFormSubmit />
+                        */}
                     </p>
                 </form>
             </main>
