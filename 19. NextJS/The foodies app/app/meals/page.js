@@ -1,7 +1,18 @@
 import Link from 'next/link';
 import classes from './page.module.css';
 import MealsGrid from '@/components/meals/meals-grid';
+import { getMeals } from '@/lib/meals';
+import { Suspense } from 'react';
 
+// An example to handle the loading page without creating a loading.js page that shows in all the view
+const Meals = async () => {
+     // Fetching fake BBDD. In Server Components its not necessary to use useEffect() hook and fetch to the server,
+    // because this component already render in the server
+    const meals = await getMeals();
+    return <MealsGrid meals={meals} />;
+}
+
+// React Server Components allows to use async functions
 const MealsPage = () => {
     return (
         <>
@@ -13,7 +24,9 @@ const MealsPage = () => {
                 </p>
             </header>
             <main className={classes.main}>
-                <MealsGrid meals={[]} />
+                <Suspense fallback={<p className={classes.loading}>Fetching meals...</p>}>
+                    <Meals />
+                </Suspense>
             </main>
         </>
     )
