@@ -2,6 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { saveMeal } from './meals';
+import { revalidatePath } from 'next/cache';
 
 // Server actions can be use only in server mode, and allows to use in the action form prop
 
@@ -37,5 +38,9 @@ export async function shareMeal(prevState, formData) { // this function only exe
     }
 
     await saveMeal(meal);
+    // NextJs has an aggresive chache handle in build production, so you need to specify when revalidate the cache in 
+    // a specific path  that needs to be reloaded. Important: by default nestead paths or child paths are not revalidated,
+    // you must set the second parameter to 'layout', 'page' otherwise
+    revalidatePath('/meals');
     redirect('/meals');
 }

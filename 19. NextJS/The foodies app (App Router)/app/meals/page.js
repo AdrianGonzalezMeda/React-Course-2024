@@ -4,6 +4,12 @@ import MealsGrid from '@/components/meals/meals-grid';
 import { getMeals } from '@/lib/meals';
 import { Suspense } from 'react';
 
+// Reserved keyword to set metadata in each page, if not defined, use the closest layout metadata
+export const metadata = {
+    title: 'All Meals',
+    description: 'Browse the delicious meals shared by or vibrant community.',
+};
+
 // An example to handle the loading page without creating a loading.js page that shows in all the view
 const Meals = async () => {
      // Fetching fake BBDD. In Server Components its not necessary to use useEffect() hook and fetch to the server,
