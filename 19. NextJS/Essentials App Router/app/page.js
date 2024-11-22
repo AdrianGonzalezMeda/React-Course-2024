@@ -3,6 +3,11 @@ import Link from 'next/link';
 import classes from './page.module.css';
 import ImageSlideshow from '@/components/images/image-slideshow';
 
+/**
+ * DOCS: https://nextjs.org/docs#app-router-vs-pages-router
+ * This app is based on app router
+ */
+
 const Home = () => {
     return (
         <>
