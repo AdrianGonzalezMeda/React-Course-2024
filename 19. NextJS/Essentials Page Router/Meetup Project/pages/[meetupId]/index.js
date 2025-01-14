@@ -1,13 +1,22 @@
+import { MongoClient, ObjectId } from "mongodb";
 import MeetupDetails from "../../components/meetups/MeetupDetails"
+import Head from "next/head";
 
-const MeetupDetailPage = () => {
+const MeetupDetailPage = (props) => {
+    console.log('props', props)
     return (
-        <MeetupDetails
-            image='https://img2.oastatic.com/img2/86691158/max/variant.jpg'
-            title='Meet up'
-            address='address'
-            description='info'
-        />
+        <>
+            <Head>
+                <title>{props.meetupData.title}</title>
+                <meta name='description' content={props.meetupData.description} />
+            </Head>
+            <MeetupDetails
+                image={props.meetupData.image}
+                title={props.meetupData.title}
+                address={props.meetupData.address}
+                description={props.meetupData.description}
+            />
+        </>
     )
 }
 
@@ -16,6 +25,20 @@ const MeetupDetailPage = () => {
 // Fallback: if you specify to false means that you declare all the posible params and any other returns 404, otherwhise,
 // setting to true you can specify some paths and the others try to render on the fly
 export async function getStaticPaths() {
+    const client = await MongoClient.connect('mongodb+srv://adriangonzalezmeda:WRWvjMSiNy4oe9PQ@cluster0.gl87o.mongodb.net/meetups?retryWrites=true&w=majority&appName=Cluster0');
+    const db = client.db();
+    const meetupsCollection = db.collection('meetups');
+    const meetups = await meetupsCollection.find({}, { _id: 1 }).toArray(); // Fetch only ids
+    client.close();
+
+    return {
+        fallback: false,
+        paths: meetups.map(meetup => ({
+            params: { meetupId: meetup._id.toString() }
+        })),
+    }
+
+    /* Example hardcoded for the dummy data before mongodb conection
     return {
         fallback: false, 
         paths: [
@@ -30,22 +53,28 @@ export async function getStaticPaths() {
                 }
             }
         ]
-    }
+    }*/
 }
 
 export async function getStaticProps(context) {
     // in context.params we have all the url params (you need to declare getStaticPaths() to access this params)
     const meetupId = context.params.meetupId;
-console.log(meetupId)
     // fetch for a single meetup data
+    const client = await MongoClient.connect('mongodb+srv://adriangonzalezmeda:WRWvjMSiNy4oe9PQ@cluster0.gl87o.mongodb.net/meetups?retryWrites=true&w=majority&appName=Cluster0');
+    const db = client.db();
+    const meetupsCollection = db.collection('meetups');
+    const selectedMeetup = await meetupsCollection.findOne({ _id: new ObjectId(meetupId) });
+    console.log(selectedMeetup)
+    client.close();
+
     return {
         props: {
             meetupData: {
-                id: meetupId,
-                image: 'https://img2.oastatic.com/img2/86691158/max/variant.jpg',
-                title: 'Meet up',
-                address: 'address',
-                description: 'info'
+                id: selectedMeetup._id.toString(),
+                title: selectedMeetup.title,
+                address: selectedMeetup.address,
+                image: selectedMeetup.image,
+                description: selectedMeetup.description,
             }
         }
     }
