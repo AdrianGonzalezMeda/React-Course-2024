@@ -24,6 +24,8 @@ const MeetupDetailPage = (props) => {
 // this paths to be prerendered.
 // Fallback: if you specify to false means that you declare all the posible params and any other returns 404, otherwhise,
 // setting to true you can specify some paths and the others try to render on the fly
+// Blocking and true are similar, but setting to true shows an empty page inmediatly and then load the dynamic content,
+// otherwise Blocking waits to generate the content to show the page. Setting to true need to handle fallback content
 export async function getStaticPaths() {
     const client = await MongoClient.connect('mongodb+srv://adriangonzalezmeda:WRWvjMSiNy4oe9PQ@cluster0.gl87o.mongodb.net/meetups?retryWrites=true&w=majority&appName=Cluster0');
     const db = client.db();
@@ -32,7 +34,7 @@ export async function getStaticPaths() {
     client.close();
 
     return {
-        fallback: false,
+        fallback: 'blocking',
         paths: meetups.map(meetup => ({
             params: { meetupId: meetup._id.toString() }
         })),
